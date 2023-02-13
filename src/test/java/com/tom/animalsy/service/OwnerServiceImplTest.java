@@ -7,6 +7,7 @@ import com.tom.animalsy.model.Animals;
 import com.tom.animalsy.model.Gender;
 import com.tom.animalsy.model.Owner;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,7 +20,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
 
 class OwnerServiceImplTest {
 
@@ -125,6 +127,21 @@ class OwnerServiceImplTest {
         Owner ownerWithNewAnimal = ownerService.addAnimal("21", "1");
 
         //then
+        verify(animalsRepo).save(animal1);
+        verify(animalsRepo, times(1)).save(animal1); // podajemy, że oczekujemy 1 wykonania metody
+        verify(animalsRepo, atLeastOnce()).save(animal1); //oczekujemy, że wywoła się co najmniej 1 raz
+        verify(animalsRepo, atLeast(1)).save(animal1); //oczekujemy, że wywoła się co najmniej 1 raz. Podajemy min liczbe wywołań
+        verify(ownerRepository).save(owner);
+//        verify(ownerRepository, never()).save(owner); // sprawdzamy, że ta metoda nigdy nie zostanie wywyołana
+        then(ownerRepository).should().save(owner); // analogiczny zapis jak verify() lecz zgodny z BBDMockito
+//        verifyNoMoreInteractions(ownerRepository.save(owner));
+//        verifyNoInteractions(ownerRepository);
+
+        // sprawdzenie czy metody wykonują się w danej kolejności
+        InOrder inOrder = inOrder(ownerRepository);
+        inOrder.verify(ownerRepository).findById("21");
+        inOrder.verify(ownerRepository).save(owner);
+
         assertThat(ownerWithNewAnimal.getAnimalsList()
                 .stream()
                 .filter(a -> a.equals("1"))
