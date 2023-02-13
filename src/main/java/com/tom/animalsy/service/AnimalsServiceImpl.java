@@ -38,7 +38,7 @@ public class AnimalsServiceImpl implements AnimalsService {
 
     @Override
     public Animals putAnimal(String id, Animals animal) {
-        Optional<Animals> animalsOptional = animalsRepo.findById(id);
+        Optional<Animals> animalsOptional = animalsRepo.findById(animal.getId());
         if (animalsOptional.isPresent()) {
             animalsOptional.get().setName(animal.getName());
             animalsOptional.get().setAge(animal.getAge());

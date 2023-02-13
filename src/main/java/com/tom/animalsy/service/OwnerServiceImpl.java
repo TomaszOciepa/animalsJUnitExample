@@ -22,6 +22,7 @@ public class OwnerServiceImpl implements OwnerService {
         this.animalsRepo = animalsRepo;
     }
 
+
     @Override
     public List<Owner> getOwners() {
         return ownerRepository.findAll();
@@ -65,33 +66,47 @@ public class OwnerServiceImpl implements OwnerService {
         Optional<Owner> optionalOwner = ownerRepository.findById(ownerId);
 
         if (optionalOwner.isPresent()) {
-            List<String> animalsList = optionalOwner.get().getAnimalsList();
-            animalsList.add(animalId);
-            optionalOwner.get().setAnimalsList(animalsList);
-
-            Optional<Animals> optionalAnimal = animalsRepo.findById(animalId);
-            optionalAnimal.get().setOwnerId(ownerId);
-            animalsRepo.save(optionalAnimal.get());
+            saveAnimalInOwner(animalId, optionalOwner);
+            saveOwnerInAnimal(ownerId, animalId);
             return ownerRepository.save(optionalOwner.get());
-
         } else {
             return optionalOwner.get();
         }
     }
 
+    private void saveAnimalInOwner(String animalId, Optional<Owner> optionalOwner) {
+        List<String> animalsList = optionalOwner.get().getAnimalsList();
+        animalsList.add(animalId);
+        optionalOwner.get().setAnimalsList(animalsList);
+    }
+
+    private void saveOwnerInAnimal(String ownerId, String animalId) {
+        Optional<Animals> optionalAnimal = animalsRepo.findById(animalId);
+        optionalAnimal.get().setOwnerId(ownerId);
+        animalsRepo.save(optionalAnimal.get());
+    }
+
     @Override
     public Owner deleteAnimal(String ownerId, String animalId) {
         Owner owner = ownerRepository.findById(ownerId).get();
-        Animals animals = animalsRepo.findById(animalId).get();
-        animals.setOwnerId(null);
-        animalsRepo.save(animals);
+        deleteOwnerInAnimal(animalId);
+        List<String> newAnimalsList = deleteAnimalInOwnerList(animalId, owner);
+        owner.setAnimalsList(newAnimalsList);
+
+        return ownerRepository.save(owner);
+    }
+
+    private List<String> deleteAnimalInOwnerList(String animalId, Owner owner) {
         List<String> newAnimalsList = owner.getAnimalsList()
                 .stream()
                 .filter(s -> !s.equals(animalId))
                 .collect(Collectors.toList());
-        owner.setAnimalsList(newAnimalsList);
+        return newAnimalsList;
+    }
 
-
-        return ownerRepository.save(owner);
+    private void deleteOwnerInAnimal(String animalId) {
+        Animals animals = animalsRepo.findById(animalId).get();
+        animals.setOwnerId(null);
+        animalsRepo.save(animals);
     }
 }

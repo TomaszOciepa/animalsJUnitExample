@@ -24,4 +24,12 @@ public class Course {
         this.endDate = endDate;
         this.animalLists = animalLists;
     }
+
+    public Course(String id, String name, LocalDateTime startDate, LocalDateTime endDate, List<String> animalLists) {
+        this.id = id;
+        this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.animalLists = animalLists;
+    }
 }

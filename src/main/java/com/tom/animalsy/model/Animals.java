@@ -24,4 +24,15 @@ public class Animals {
         this.gender = gender;
         this.ownerId = ownerId;
     }
+
+
+
+    public Animals(String id, String name, String kindOfanimmal, int age, Gender gender, String ownerId) {
+        this.id = id;
+        this.name = name;
+        this.kindOfanimmal = kindOfanimmal;
+        this.age = age;
+        this.gender = gender;
+        this.ownerId = ownerId;
+    }
 }

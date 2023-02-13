@@ -30,4 +30,14 @@ public class Owner {
         this.created = created;
         this.animalsList = animalsList;
     }
+
+    public Owner(String id, String firstName, String lastName, String email, Address address, LocalDateTime created, List<String> animalsList) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.created = created;
+        this.animalsList = animalsList;
+    }
 }
