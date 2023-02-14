@@ -3,6 +3,7 @@ package com.tom.animalsy.service;
 import com.tom.animalsy.Repository.CourseRepository;
 import com.tom.animalsy.model.*;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentMatchers;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,8 +15,10 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 class CourseServiceImplTest {
 
@@ -72,7 +75,57 @@ class CourseServiceImplTest {
         assertThat(course, equalTo(newCourse));
     }
 
+    @Test
+    void addCourseWithArgumentsMatchers() {
+        //given
+        List<String> list = Arrays.asList();
+        Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
+        CourseRepository courseRepository = mock(CourseRepository.class);
+        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
 
+        //argumentsMatchers
+        given(courseRepository.save(ArgumentMatchers.any())).willReturn(newCourse);
+        given(courseRepository.save(ArgumentMatchers.any(Course.class))).willReturn(newCourse);
+
+        //when
+        Course course = courseService.addCourse(newCourse);
+
+        //then
+        verify(courseRepository).save(ArgumentMatchers.any(Course.class));
+        assertThat(course, equalTo(newCourse));
+
+    }
+
+    @Test
+    void addCourseWithLambdas() {
+        //given
+        List<String> list = Arrays.asList();
+        Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
+        CourseRepository courseRepository = mock(CourseRepository.class);
+        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+        given(courseRepository.save(argThat(c -> c.getId().equals("231d")))).willReturn(newCourse);
+
+        //when
+        Course course = courseService.addCourse(newCourse);
+
+        //then
+        assertThat(course, equalTo(newCourse));
+    }
+
+    @Test
+    void addCourseWShouldBeThrowException() {
+        //given
+        List<String> list = Arrays.asList();
+        Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
+        CourseRepository courseRepository = mock(CourseRepository.class);
+        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+        given(courseRepository.save(newCourse)).willThrow(IllegalStateException.class);
+
+        //when
+        //then
+        assertThrows(IllegalStateException.class, ()-> courseService.addCourse(newCourse));
+
+    }
 
     @Test
     void putCourse() {
