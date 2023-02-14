@@ -18,6 +18,9 @@ public class Course {
     private LocalDateTime endDate;
     private List<String> animalLists;
 
+    public Course() {
+    }
+
     public Course(String name, LocalDateTime startDate, LocalDateTime endDate, List<String> animalLists) {
         this.name = name;
         this.startDate = startDate;

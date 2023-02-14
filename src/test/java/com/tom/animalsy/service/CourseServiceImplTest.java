@@ -76,7 +76,7 @@ class CourseServiceImplTest {
     }
 
     @Test
-    void deleteCourseShouldDoNothing(){
+    void deleteCourseShouldDoNothing() {
         //given
         CourseRepository courseRepository = mock(CourseRepository.class);
         CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
@@ -138,7 +138,7 @@ class CourseServiceImplTest {
 
         //when
         //then
-        assertThrows(IllegalStateException.class, ()-> courseService.addCourse(newCourse));
+        assertThrows(IllegalStateException.class, () -> courseService.addCourse(newCourse));
     }
 
     @Test
@@ -160,6 +160,36 @@ class CourseServiceImplTest {
 //        verify(courseRepository).save(argumentCaptor.capture());
         then(courseRepository).should().save(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue().getName(), equalTo("Nowy Kurs"));
+        assertThat(course, equalTo(newCourse));
+    }
+
+    @Test
+    void addCourseAnswer() {
+        //given
+        List<String> list = Arrays.asList();
+        Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
+        CourseRepository courseRepository = mock(CourseRepository.class);
+        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+
+        doAnswer(invocationOnMock -> {
+            Course courseArg = invocationOnMock.getArgument(0);
+            return newCourse;
+        }).when(courseRepository).save(newCourse);
+
+        when(courseRepository.save(newCourse)).then(i -> {
+            Course courseArg = i.getArgument(0);
+            return newCourse;
+        });
+
+        willAnswer(invocationOnMock -> {
+            Course courseArg = invocationOnMock.getArgument(0);
+            return newCourse;
+        }).given(courseRepository).save(newCourse);
+
+        //when
+        Course course = courseService.addCourse(newCourse);
+
+        //then
         assertThat(course, equalTo(newCourse));
     }
 
@@ -188,7 +218,7 @@ class CourseServiceImplTest {
     void addAnimal() {
         //given
         List<String> animalIdList = new ArrayList<>();
-        Course course = new Course("1dq","Kurs dla piesków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList);
+        Course course = new Course("1dq", "Kurs dla piesków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList);
         Animals animal = new Animals("99e", "Franklin", "Żółw", 1, Gender.MALE, null);
 
         CourseRepository courseRepository = mock(CourseRepository.class);
@@ -211,7 +241,7 @@ class CourseServiceImplTest {
         Animals animal = new Animals("99e", "Franklin", "Żółw", 1, Gender.MALE, null);
         List<String> animalIdList = new ArrayList<>();
         animalIdList.add(animal.getId());
-        Course course = new Course("1dq","Kurs dla piesków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList);
+        Course course = new Course("1dq", "Kurs dla piesków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList);
 
         CourseRepository courseRepository = mock(CourseRepository.class);
         CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
@@ -241,8 +271,8 @@ class CourseServiceImplTest {
         animalIdList2.add(animal2.getId());
 
 
-        Course course1 = new Course("1dq","Kurs dla piesków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList1);
-        Course course2 = new Course("4dq","Kurs dla kotków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList2);
+        Course course1 = new Course("1dq", "Kurs dla piesków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList1);
+        Course course2 = new Course("4dq", "Kurs dla kotków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList2);
 
         List<Course> courseList = new ArrayList<>();
         courseList.add(course1);
