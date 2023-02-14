@@ -17,8 +17,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.Mockito.*;
 
 class CourseServiceImplTest {
@@ -74,6 +73,21 @@ class CourseServiceImplTest {
 
         //then
         assertThat(course, equalTo(newCourse));
+    }
+
+    @Test
+    void deleteCourseShouldDoNothing(){
+        //given
+        CourseRepository courseRepository = mock(CourseRepository.class);
+        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+        doNothing().when(courseRepository).deleteById("231");
+//        willDoNothing().given(courseRepository).deleteById("231");
+        //when
+        courseService.deleteCourse("231");
+
+        //then
+        verify(courseRepository).deleteById("231");
+
     }
 
     @Test
