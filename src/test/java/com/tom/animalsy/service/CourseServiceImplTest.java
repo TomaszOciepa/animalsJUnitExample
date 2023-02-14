@@ -3,6 +3,7 @@ package com.tom.animalsy.service;
 import com.tom.animalsy.Repository.CourseRepository;
 import com.tom.animalsy.model.*;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
 import java.time.LocalDateTime;
@@ -17,8 +18,8 @@ import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.*;
 
 class CourseServiceImplTest {
 
@@ -56,8 +57,8 @@ class CourseServiceImplTest {
         //then
         assertThat(wantedCourse.getId(), equalTo("1dq"));
         assertThat(wantedCourse.getName(), equalTo("Kurs dla piesków"));
-
     }
+
 
     @Test
     void addCourse() {
@@ -124,8 +125,30 @@ class CourseServiceImplTest {
         //when
         //then
         assertThrows(IllegalStateException.class, ()-> courseService.addCourse(newCourse));
-
     }
+
+    @Test
+    void addCourseWithArgumentCaptor() {
+        //given
+        List<String> list = Arrays.asList();
+        Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
+        CourseRepository courseRepository = mock(CourseRepository.class);
+        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+
+        ArgumentCaptor<Course> argumentCaptor = ArgumentCaptor.forClass(Course.class);
+
+        given(courseRepository.save(newCourse)).willReturn(newCourse);
+
+        //when
+        Course course = courseService.addCourse(newCourse);
+
+        //then
+//        verify(courseRepository).save(argumentCaptor.capture());
+        then(courseRepository).should().save(argumentCaptor.capture());
+        assertThat(argumentCaptor.getValue().getName(), equalTo("Nowy Kurs"));
+        assertThat(course, equalTo(newCourse));
+    }
+
 
     @Test
     void putCourse() {
