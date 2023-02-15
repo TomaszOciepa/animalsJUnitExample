@@ -11,14 +11,11 @@ import org.mockito.InOrder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
@@ -66,7 +63,7 @@ class OwnerServiceImplTest {
     @Test
     void addOwner() {
         //given
-        List<Owner> prepareOwnerList = prepareOwnersData();
+//        List<Owner> prepareOwnerList = prepareOwnersData();
         Owner owner = new Owner("31", "Klaudia", "Quirini", "kla@wp.pl", null, LocalDateTime.now(), null);
         OwnerRepository ownerRepository = mock(OwnerRepository.class);
         AnimalsRepo animalsRepo = mock(AnimalsRepo.class);

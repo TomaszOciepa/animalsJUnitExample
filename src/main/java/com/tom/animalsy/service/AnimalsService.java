@@ -1,7 +1,6 @@
 package com.tom.animalsy.service;
 
 import com.tom.animalsy.model.Animals;
-import org.springframework.data.mongodb.repository.Query;
 
 import java.util.List;
 
