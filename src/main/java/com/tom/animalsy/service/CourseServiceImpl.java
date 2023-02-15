@@ -18,6 +18,8 @@ public class CourseServiceImpl implements CourseService {
         this.courseRepository = courseRepository;
     }
 
+
+
     @Override
     public List<Course> getCourses() {
         return courseRepository.findAll();
@@ -80,5 +82,16 @@ public class CourseServiceImpl implements CourseService {
 
         course.setAnimalLists(animalList);
         return courseRepository.save(course);
+    }
+
+    int countsAllCourse(){
+        return countCoursesForDogs() + countCoursesForCats();
+    }
+
+    int countCoursesForCats(){
+        return getCourses().size();
+    }
+    int countCoursesForDogs(){
+        return getCourses().size();
     }
 }

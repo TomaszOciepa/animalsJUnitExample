@@ -17,5 +17,5 @@ public interface AnimalsService {
     Animals putAnimal(String id, Animals animal);
 
     List<Animals> findAnimalsByOwnerId(String ownerId);
-
+    
 }

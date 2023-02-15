@@ -256,6 +256,21 @@ class CourseServiceImplTest {
 
     }
 
+    @Test
+    void testCountsAllCourse(){
+        //given
+        CourseServiceImpl courseService= mock(CourseServiceImpl.class);
+        given(courseService.countCoursesForCats()).willReturn(20);
+        given(courseService.countCoursesForDogs()).willReturn(8);
+
+        given(courseService.countsAllCourse()).willCallRealMethod();
+        //when
+        int result = courseService.countsAllCourse();
+
+        //then
+        assertThat(result, equalTo(28));
+    }
+
     List<Course> prepareCourseData() {
 
         List<String> animalIdList1 = new ArrayList<>();
@@ -278,6 +293,5 @@ class CourseServiceImplTest {
         courseList.add(course1);
         courseList.add(course2);
         return courseList;
-
     }
 }
