@@ -3,31 +3,40 @@ package com.tom.animalsy.service;
 import com.tom.animalsy.Repository.CourseRepository;
 import com.tom.animalsy.model.*;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.*;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.BDDMockito.*;
-import static org.mockito.Mockito.*;
 
+@MockitoSettings(strictness = Strictness.STRICT_STUBS)
+@ExtendWith(MockitoExtension.class)
 class CourseServiceImplTest {
 
+    @InjectMocks
+    private CourseServiceImpl courseService;
+    @Mock
+    private CourseRepository courseRepository;
+    @Captor
+    ArgumentCaptor<Course> argumentCaptor;
     @Test
     void getCoursesShouldBeReturnAllCourses() {
         //given
         List<Course> courseDataPrepareList = prepareCourseData();
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         given(courseRepository.findAll()).willReturn(courseDataPrepareList);
 
         //when
@@ -42,8 +51,8 @@ class CourseServiceImplTest {
     void getCourseById() {
         //given
         List<Course> courseDataPrepareList = prepareCourseData();
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         given(courseRepository.findById("1dq")).willReturn(courseDataPrepareList
                 .stream()
                 .filter(course -> course.getId().equals("1dq"))
@@ -64,8 +73,8 @@ class CourseServiceImplTest {
         //given
         List<String> list = Arrays.asList();
         Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         given(courseRepository.save(newCourse)).willReturn(newCourse);
 
         //when
@@ -78,8 +87,8 @@ class CourseServiceImplTest {
     @Test
     void deleteCourseShouldDoNothing() {
         //given
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         doNothing().when(courseRepository).deleteById("231");
 //        willDoNothing().given(courseRepository).deleteById("231");
         //when
@@ -95,8 +104,8 @@ class CourseServiceImplTest {
         //given
         List<String> list = Arrays.asList();
         Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
 
         //argumentsMatchers
         given(courseRepository.save(ArgumentMatchers.any())).willReturn(newCourse);
@@ -116,8 +125,8 @@ class CourseServiceImplTest {
         //given
         List<String> list = Arrays.asList();
         Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         given(courseRepository.save(argThat(c -> c.getId().equals("231d")))).willReturn(newCourse);
 
         //when
@@ -132,8 +141,8 @@ class CourseServiceImplTest {
         //given
         List<String> list = Arrays.asList();
         Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         given(courseRepository.save(newCourse)).willThrow(IllegalStateException.class);
 
         //when
@@ -146,10 +155,10 @@ class CourseServiceImplTest {
         //given
         List<String> list = Arrays.asList();
         Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
 
-        ArgumentCaptor<Course> argumentCaptor = ArgumentCaptor.forClass(Course.class);
+//        ArgumentCaptor<Course> argumentCaptor = ArgumentCaptor.forClass(Course.class);
 
         given(courseRepository.save(newCourse)).willReturn(newCourse);
 
@@ -163,35 +172,35 @@ class CourseServiceImplTest {
         assertThat(course, equalTo(newCourse));
     }
 
-    @Test
-    void addCourseAnswer() {
-        //given
-        List<String> list = Arrays.asList();
-        Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
-
-        doAnswer(invocationOnMock -> {
-            Course courseArg = invocationOnMock.getArgument(0);
-            return newCourse;
-        }).when(courseRepository).save(newCourse);
-
-        when(courseRepository.save(newCourse)).then(i -> {
-            Course courseArg = i.getArgument(0);
-            return newCourse;
-        });
-
-        willAnswer(invocationOnMock -> {
-            Course courseArg = invocationOnMock.getArgument(0);
-            return newCourse;
-        }).given(courseRepository).save(newCourse);
-
-        //when
-        Course course = courseService.addCourse(newCourse);
-
-        //then
-        assertThat(course, equalTo(newCourse));
-    }
+//    @Test
+//    void addCourseAnswer() {
+//        //given
+//        List<String> list = Arrays.asList();
+//        Course newCourse = new Course("231d", "Nowy Kurs", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//
+//        doAnswer(invocationOnMock -> {
+//            Course courseArg = invocationOnMock.getArgument(0);
+//            return newCourse;
+//        }).when(courseRepository).save(newCourse);
+//
+//        when(courseRepository.save(newCourse)).then(i -> {
+//            Course courseArg = i.getArgument(0);
+//            return newCourse;
+//        });
+//
+//        willAnswer(invocationOnMock -> {
+//            Course courseArg = invocationOnMock.getArgument(0);
+//            return newCourse;
+//        }).given(courseRepository).save(newCourse);
+//
+//        //when
+//        Course course = courseService.addCourse(newCourse);
+//
+//        //then
+//        assertThat(course, equalTo(newCourse));
+//    }
 
 
     @Test
@@ -200,8 +209,8 @@ class CourseServiceImplTest {
         List<Course> courseDataPrepareList = prepareCourseData();
         List<String> list = Arrays.asList();
         Course course = new Course("1dq", "Kurs dla piesków (update)", LocalDateTime.now(), LocalDateTime.now().plusMonths(1), list);
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         given(courseRepository.findById("1dq")).willReturn(Optional.ofNullable(courseDataPrepareList.get(0)));
         given(courseRepository.save(course)).willReturn(course);
 
@@ -221,8 +230,8 @@ class CourseServiceImplTest {
         Course course = new Course("1dq", "Kurs dla piesków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList);
         Animals animal = new Animals("99e", "Franklin", "Żółw", 1, Gender.MALE, null);
 
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         given(courseRepository.findById("1dq")).willReturn(Optional.of(course));
         given(courseRepository.save(course)).willReturn(course);
 
@@ -243,8 +252,8 @@ class CourseServiceImplTest {
         animalIdList.add(animal.getId());
         Course course = new Course("1dq", "Kurs dla piesków", LocalDateTime.now().minusMonths(2), LocalDateTime.now().plusMonths(1), animalIdList);
 
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
+//        CourseRepository courseRepository = mock(CourseRepository.class);
+//        CourseServiceImpl courseService = new CourseServiceImpl(courseRepository);
         given(courseRepository.findById("1dq")).willReturn(Optional.of(course));
         given(courseRepository.save(course)).willReturn(course);
 
@@ -257,7 +266,7 @@ class CourseServiceImplTest {
     }
 
     @Test
-    void testCountsAllCourse(){
+    void testCountsAllCourse() {
         //given
         CourseServiceImpl courseService= mock(CourseServiceImpl.class);
         given(courseService.countCoursesForCats()).willReturn(20);
