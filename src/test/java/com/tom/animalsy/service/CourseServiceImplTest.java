@@ -280,6 +280,21 @@ class CourseServiceImplTest {
         assertThat(result, equalTo(28));
     }
 
+    @Test
+    void testCountsAllCourseWithSpy() {
+        //given
+        CourseServiceImpl courseServiceSpy = spy(CourseServiceImpl.class);
+        given(courseService.countCoursesForCats()).willReturn(20);
+        given(courseService.countCoursesForDogs()).willReturn(8);
+
+//        given(courseService.countsAllCourse()).willCallRealMethod();
+        //when
+        int result = courseService.countsAllCourse();
+
+        //then
+        assertThat(result, equalTo(28));
+    }
+
     List<Course> prepareCourseData() {
 
         List<String> animalIdList1 = new ArrayList<>();
